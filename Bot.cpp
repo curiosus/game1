@@ -4,8 +4,9 @@
 Bot::Bot() {
     mShape.setRadius(mRadius);
     mShape.setFillColor(sf::Color::Black);
-    mDirection.x = 100.0f;
-    mDirection.y = 100.0f;
+    mVelocity.x = 100.0f;
+    mVelocity.y = 100.0f;
+    mRotationAngle = 90.0f;
 }
 
 void Bot::move(sf::Vector2f movement) {
@@ -27,30 +28,37 @@ void Bot::setColor(sf::Color color) {
 
 void Bot::update(sf::Time deltaTime) {
     if (mForceAbsorbed.x != 0.0f || mForceAbsorbed.y != 0.0f) {
-        mDirection.x *= (-1.0f);
-        mDirection.y *= (-1.0f);
+        mVelocity.x *= (-1.0f);
+        mVelocity.y *= (-1.0f);
     }
 
-    sf::Vector2f movement{mDirection.x, mDirection.y};
+    sf::Vector2f movement{mVelocity.x, mVelocity.y};
+    mVision.setPosition(mShape.getPosition());
+    mVision.setSize(sf::Vector2f{30.0f, 250.0f});
+    mVision.setOutlineColor(sf::Color::Black);
+    mVision.setOutlineThickness(3.0f);
+    mVision.setFillColor(sf::Color::Transparent);
+    mVision.rotate(mRotationAngle);
 
-    sf::CircleShape visionRadius{};
-    visionRadius.setPosition(mShape.getPosition());
-    visionRadius.setRadius(50.0f);
+
+
 
     std::vector<Block*> blocksInView{};
     for (auto block : mBlocks) {
-        if (block->getShape().getGlobalBounds().intersects(visionRadius.getGlobalBounds())) {
+        sf::FloatRect blockRect = block->getShape().getGlobalBounds();
+        sf::FloatRect visionRect = mVision.getGlobalBounds();
+        sf::FloatRect thisRect = mShape.getGlobalBounds();
+        if (blockRect.intersects(visionRect)) {
             blocksInView.push_back(block);
         }
     }
 
-    std::vector<sf::Vector2f>* noBlocks{};
-    Block* tmpBlock{};
     for (auto blockInView : blocksInView) {
-        std::cout << blockInView->getPosition().x << ", " << blockInView->getPosition().y << std::endl;
-        std::cout << blockInView->getShape().getPosition().x << ", " << blockInView->getShape().getPosition().y << std::endl;
 
     }
+
+
+
     std::cout << std::endl;
 
     /*
@@ -72,6 +80,7 @@ void Bot::update(sf::Time deltaTime) {
     move(movement * deltaTime.asSeconds());
     mForceAbsorbed.x = 0.0f;
     mForceAbsorbed.y = 0.0f;
+    mRotationAngle = 0.0f;
 }
 
 
@@ -85,4 +94,8 @@ void Bot::setWorld(std::vector<Block *> blocks, std::vector<Bot *> bots, Player 
     mBlocks = blocks;
     mBots = bots;
 
+}
+
+sf::RectangleShape Bot::getVision() {
+    return mVision;
 }

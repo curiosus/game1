@@ -80,6 +80,7 @@ void Game::render() {
     }
     for (auto bot : mBots) {
         mWindow.draw(bot->getShape());
+        mWindow.draw(bot->getVision());
     }
     mWindow.draw(mPlayer.getShape());
     mWindow.display();

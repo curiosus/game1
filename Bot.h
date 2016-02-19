@@ -16,17 +16,21 @@ public:
     void setColor(sf::Color color);
     void absorbForce(sf::Vector2f forceVector);
     void setWorld(std::vector<Block*> blocks, std::vector<Bot*> bots, Player* player);
+    sf::RectangleShape getVision() ;
 
 
 
 private:
     float mRadius = 25.0f;
     sf::CircleShape mShape;
-    sf::Vector2f mDirection;
+    sf::Vector2f mVelocity;
     sf::Vector2f mForceAbsorbed;
     std::vector<Block*> mBlocks;
     std::vector<Bot*> mBots;
     Player* mPlayer;
+    sf::RectangleShape mVision;
+    float mRotationAngle;
+
 
 
 
